@@ -1,0 +1,29 @@
+header, footer {
+    background-color: darkred;
+    color: whitesmoke;
+    padding: 1rem
+}
+
+.active {
+    color: darkgreen;
+}
+
+ul#result li {
+    display: grid;
+    grid-template-columns: 3fr 1fr 1fr;
+}
+
+/* TODO: add styling for flash message box 
+ including warning, info, success, error */
+
+ #search-form {
+    margin: 0 auto;
+    margin-bottom: 8px;
+ }
+
+ .gym-card {
+    border: 1px solid #ddd;
+    margin-bottom: 8px;
+    padding: 1rem;
+ }
+ 
