@@ -1,3 +1,3 @@
 <header>
-    Site header
+    <?= $title ?>
 </header>

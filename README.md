@@ -22,19 +22,19 @@ Your app to find BJJ gyms all over the world!
 
 ## Routes
 - GET
-    - home [ huvudsida, se alla gym ]
-    - admin/gyms [ Se inloggad användares gym]
-    - admin/gyms/add [ Inloggad användare se add sida ]
-    - admin/gyms/edit [ inloggad användare se edit sida ]
+    - home [ huvudsida, se alla gym ] [OK]
+    - users/:username/ [ Se inloggad användares profil och gym]
+    - gyms/add [ Inloggad användare se add sida ]
+    - gyms/edit [ inloggad användare se edit sida ]
     - gyms/:gym_name [ användare se all info om spec. gym]
     - comments/gym/:gym_id [ se lista av comments spec. Gym ]
     - comments/user/:user_id [ se lista av comments spec. User ]
-    - login [ se login sida ]
-    - register [ se register sida ]
+    - login [ se login sida ] [OK]
+    - register [ se register sida ] [OK]
 - POST
-    - admin/gyms/add [ inloggad användare skapa nytt gym ] 
-    - login [ användare loggar in ]
-    - register [ användare registrerar sig ]
+    - gyms/add [ inloggad användare skapa nytt gym ] [OK]
+    - login [ användare loggar in ] [OK]
+    - register [ användare registrerar sig ] [OK]
     - admin/comments/add [ inloggad användare skapar ny comment ]
 - PUT
     - admin/gyms/edit [ inloggad användare editerar gym ]

@@ -1,5 +1,6 @@
 <?php
-session_start();
+include "_includes/functions.php";
+try_session_start();
 
 // Check if method is post
 // Handle storing new gym
@@ -44,9 +45,9 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
         // Show new gym form
         // get styles from db
         $styles = get_styles();
-        include "views/partials/add_gym.php";
+        include "views/add_gym.php";
     } else {
         // Redirect to login page
-        set_flash_message_and_redirect_to("You need to be logged in to add a gym", "login");
+        set_flash_message_and_redirect_to("You need to be logged in to add a gym", "/login");
     }
 }

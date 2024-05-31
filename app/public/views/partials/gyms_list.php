@@ -1,4 +1,5 @@
 <div id="gyms_list" class='gyms-grid'>
+<?php $gyms = is_authenticated() ? get_gyms_with_users($search_term) : get_gyms($search_term); ?>
 <?php include "gyms_map.php"; ?>
 <hr>
 <?php foreach ($gyms as $gym) : ?>

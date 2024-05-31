@@ -1,8 +1,8 @@
-<form action="/gyms" method="post">
+<form hx-post="/gyms/add">
   <h1>Add Gym</h1>
   <div>
   <label for="name">Gym Name:</label>
-  <input type="text" id="name" name="name">
+  <input type="text" id="name" name="name" >
   </div>
         <div>
 
@@ -75,4 +75,9 @@
 
     addSession();
     const addSessionButton = document.getElementById('add-session');
+
+    const inputName = document.getElementById('name');
+    inputName.addEventListener("focusout", (evt) => {
+        console.log(evt);
+    });
 </script>

@@ -2,9 +2,21 @@
 require_once "_includes/Database.php";
 require_once "_includes/functions.php";
 
+// more memory because of reading big json file
+ini_set('memory_limit', '512M');
+
 try {
   $config = require_once "config.php";
   $db = new Database($config["database"], $config["database"]["user"], $config["database"]["passw"]);
+
+  # check query if reset database
+  $is_reset = isset($_GET['reset']);
+
+  if ($is_reset) {
+    $sql = "DROP TABLE users; DROP TABLE gyms; DROP TABLE gyms; DROP TABLE sessions; DROP TABLE styles;DROP TABLE styles;";
+    $db->query($sql);
+  }
+
   // Users
   $sql = "CREATE TABLE IF NOT EXISTS `users` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -42,7 +54,7 @@ try {
       
   $db->query($sql);
       
-    $sql = "DROP TABLE sessions; CREATE TABLE IF NOT EXISTS `sessions` (
+    $sql = "CREATE TABLE IF NOT EXISTS `sessions` (
       `id` int(11) NOT NULL AUTO_INCREMENT,
       `gym_id` int(11) NOT NULL,
       `type` varchar(50) NULL,
@@ -82,21 +94,21 @@ try {
     add_gym("Art of Roll", "Dalhemsgatan 5, 212 24 Malmö", "Gym 1 beskrivning", 1);
     // wait one second
     sleep(1);
-    add_gym("Limitless Malmö", "Betaniaplan 4, 211 55 Malmö", "Gym 1 beskrivning", 1);
+    add_gym("Limitless Malmö", "Betaniaplan 4, 211 55 Malmö", "Gym 2 beskrivning", 1);
     sleep(1);
 
-    add_gym("Redline Training Center", "Redline Training Center", "Gym 1 beskrivning", 2);
+    add_gym("Redline Training Center", "Redline Training Center", "Gym 3 beskrivning", 2);
     sleep(1);
 
-    add_gym("Grappling Resistance", "Snapperupsgatan 9, 211 35 Malmö", "Gym 1 beskrivning", 2);
+    add_gym("Grappling Resistance", "Snapperupsgatan 9, 211 35 Malmö", "Gym 4 beskrivning", 2);
     sleep(1);
 
     add_gym("Bangkok Fight Lab", "137 Sukhumvit 50, Khlong Toei, Bangkok 10110, Thailand", "Gym 1 beskrivning", 3);
     sleep(1);
 
-    add_gym("MMA-Alliance", "Rolfsgatan 7B, 214 34 Malmö", "Gym 1 beskrivning", 3);
+    add_gym("MMA-Alliance", "Rolfsgatan 7B, 214 34 Malmö", "Gym 5 beskrivning", 3);
     sleep(1);
-    add_gym("Nacka Dojo", "Skuru skolväg 2B, 131 47 Nacka", "Gym 1 beskrivning", 4);
+    add_gym("Nacka Dojo", "Skuru skolväg 2B, 131 47 Nacka", "Gym 6 beskrivning", 4);
   }
 
 
@@ -141,8 +153,58 @@ try {
     $db->query($sql, [5, "Drilling", 1, "sunday", "09:00:00", "10:00:00", 0, 1]);
     $db->query($sql, [5, "Drilling", 2, "wednesday", "10:00:00", "11:00:00", 0, 1]);
     $db->query($sql, [5, null, 3, "monday", "11:00:00", "12:00:00", 0, 1]);
+    $db->query($sql, [6, "Drilling", 1, "sunday", "09:00:00", "10:00:00", 0, 1]);
+    $db->query($sql, [6, "Drilling", 2, "wednesday", "10:00:00", "11:00:00", 0, 1]);
+    $db->query($sql, [6, null, 3, "monday", "18:00:00", "19:30:00", 0, 1]);
+    $db->query($sql, [6, null, 3, "saturday", "11:00:00", "12:00:00", 0, 1]);
+  }
+
+
+  // Create cities table if not exists
+  // selected_fields = ['geoname_id', 'name', 'ascii_name', 'cou_name_en','alternate_names', 'country', 'population']
+  $sql = "CREATE TABLE IF NOT EXISTS `cities` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(100) NOT NULL,
+    `ascii_name` VARCHAR(100) NOT NULL,
+    `country_name_english` VARCHAR(100) NOT NULL,
+    `alternate_names` VARCHAR(100) NULL,
+    `population` integer NOT NULL,
+    PRIMARY KEY (`id`)
+  ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
+
+  $db->query($sql);
+
+  $sql = "SELECT * FROM `cities`";
+  $statement = $db->query($sql);
+  $cities = $db->fetchAll($statement);
+  if (count($cities) == 0 || true) {
+    // If there are no cities, create them
+    // read cities from json file
+    $file = fopen("cities.json", "r");
+    $cities = json_decode(fread($file, filesize("cities.json")));
+    
+    // insert cities into database
+    $sql = "INSERT INTO `cities` (`name`, `ascii_name`, `country_name_english`, `alternate_names`, `population`) VALUES (?,?,?,?,?)";
+    foreach ($cities as $city) {
+      $alternate_names = $city->alternate_names? implode(",", $city->alternate_names) : "";
+
+      if ($city->cou_name_en == "Denmark") {
+        
+        // check if city exists in database
+        $sql = "SELECT * FROM `cities` WHERE `name` =?";
+        $statement = $db->query($sql, [$city->name]);
+        $city_exists = $db->fetchOne($statement);
+        if ($city_exists) {
+          continue;
+        }
+        echo "<p>adding:". $city->name . "<p/>" . PHP_EOL;
+        print_r2([$city->name, $city->ascii_name, $city->cou_name_en, $alternate_names, intval($city->population)]);
+        $db->query($sql, [$city->name, $city->ascii_name, $city->cou_name_en, $alternate_names, intval($city->population)]);
+      } 
+    }
   }
   echo "Database setup complete <br>";
 } catch (PDOException $e) {
-  echo "Database setup exception $e";
+  echo "Database setup exception: " . $e->getMessage();
 }
+

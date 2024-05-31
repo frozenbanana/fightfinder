@@ -1,4 +1,3 @@
-version: '3'
 services:
     php:
         build:
@@ -16,7 +15,7 @@ services:
             MYSQL_ROOT_PASSWORD: db_root_password
             MYSQL_USER: db_user
             MYSQL_PASSWORD: db_password
-            MYSQL_DATABASE: db_learn
+            MYSQL_DATABASE: fightfinder_db
         volumes:
             - mysqldata:/var/lib/mysql
         ports:
