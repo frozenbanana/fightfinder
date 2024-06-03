@@ -1,6 +1,12 @@
 # FightFinder
 Your app to find BJJ gyms all over the world!
 
+
+## Install
+You need docker compose
+
+run `docker compose up`
+
 ## Database
 
 **gyms**

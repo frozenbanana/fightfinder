@@ -157,6 +157,7 @@ function get_gyms($search_term = "")
 
     $google_result = get_gyms_from_google($search_term);
 
+    print_r2($google_result);
     // format result from google to match database
     foreach ($google_result['results'] as $gym) {
         $result[] = [
@@ -173,9 +174,9 @@ function get_gyms($search_term = "")
         add_gym_with_coords($gym['name'], $gym['formatted_address'], $gym['geometry']['location']['lat'], $gym['geometry']['location']['lng'], $gym['name'], 1);
     }
 
-    print_r2("Google");
-    print_r2($result);
-    print_r2("---");
+    // print_r2("Google");
+    // print_r2($result);
+    // print_r2("---");
     return $result;
 }
 
